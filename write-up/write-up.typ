@@ -45,3 +45,5 @@ g->f
 f->d
 d->g
 }```)$])
+
+We seek to show that this pattern holds in general iff the matrix exists, since there are cases where no solution is possible, namely $N = 3 "and" N = 4$.
