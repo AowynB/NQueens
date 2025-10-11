@@ -16,7 +16,7 @@ For example, the matrix
 0,0,1,0;
 )$])
 is a valid solution, as none of the $1$s can "attack" each other on a diagonal, horizontal, or vertical line (the queen's valid moves).
-Notice that this could form a digraph, where the top of the matrix is labelled $a_0, a_1, ..., a_N$, and the side $b_0, b_1, ..., b_N$, and an edge from $a_n$ to $b_m$ (with $n,m in [0, N] inter NN_0$) existing iff $M_(m,n) = 1$ (where $M$ is the matrix in question).
+Notice that this could form a digraph, where the top of the matrix is labelled $a_0, a_1, ..., a_N$, and the side $b_0, b_1, ..., b_N$, and an edge from $a_n$ to $b_m$ (with $n,m in {0, 1, ..., N}$) existing iff $M_(m,n) = 1$ (where $M$ is the matrix in question).
 Thus, our matrix above would form the digraph
 #align(center, block[#raw-render(```dot digraph {
 a_0->a_2
@@ -48,5 +48,5 @@ a_3->a_6
 }```)$])
 
 We seek to show that this pattern of cyclic digraphs holds in general iff the matrix exists.
-Note there are cases where no solution is possible, namely $N = 3 "and" N = 4$.
+Note there are cases where no solution is possible, namely $N = 2 "and" N = 3$.
 First, we need to understand what the digraph is representing about the board.
