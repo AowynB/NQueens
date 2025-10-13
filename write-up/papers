@@ -18,3 +18,6 @@ Hopfield network solutions to the NQueens problem (https://en.wikipedia.org/wiki
 
 https://annas-archive.se/md5/a9e6da925922ff87b636f65a2e56da2e
 Overview of various definitions of the problem and algorithms for generating all possible solutions
+
+https://www.lamsade.dauphine.fr/~mlampis/papers/queen-AKCE.pdf
+"Queen labelling a digraph" (see proposition 2.1.) 
