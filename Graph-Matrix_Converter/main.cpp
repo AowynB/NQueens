@@ -1,48 +1,25 @@
 //
-// Created by aowyn on 10/10/25.
+// Created by Aowyn on 10/10/25.
 //
 #include <iostream>
 #include <cstring>
+#include <regex>
 #include <string>
 #include <vector>
 
 /* represents a single node in a one way graph, with pointers to connected noded */
 struct node{
-    char name; //node identifier
+    int label; //node identifier
     std::vector<node*> neighbors; //connected nodes
 };
 
 constexpr int a = 'a'; //the ascii value of lowercase a used for displaying graph nodes as alphabetical characters
 
 /* CONVERSION FUNCTIONS */
-/**
- * matrix_to_graph(matrix) takes a matrix of true false values and converts it into a graph represented by a set of
- * nodes and one way connections. The graph is returned in the form of a vector of node pointers each containing a
- * char representing the label of a matrix row, the label of each node neighbors points to is the columb on that row
- * where a value of true exists in the original matrix.
- * @param matrix a 2d vector of boolean values representing a matrix of boolean values
- * @return a vector of node pointers representing a graph
- */
 static std::vector<node*> matrix_to_graph(const std::vector<std::vector<bool>>& matrix);
-
-/**
- * graph_to_matrix(graph) takes a graph in the form of a vector of node pointers and represents it as a matrix of boolean
- * values where the true value represents a point where the node representing that row points to a node representing
- * that column.
- * @param graph a vector of node pointers representing a graph
- * @return a 2d vector of boolean values representing a matrix of boolean values
- */
 static std::vector<std::vector<bool>> graph_to_matrix(const std::vector<node*>& graph);
 
 /* VERIFICATION FUNCTIONS */
-/**
- * validate_Nqueens(matrix, graph) accepts a 2d matrix of boolean values, and it's corresponding graph and determines
- * weather or not they satisfy the constraints of the Nqueens problem: each true values is placed in such a way that it
- * does not share a diagonal, column, or row, with any other true values.
- * @param matrix a 2d vector of boolean values representing a matrix of boolean values
- * @param graph a vector of node pointers representing a graph
- * @return weather or not the given matrix and graph satisfy Nqueens
- */
 static bool validate_Nqueens(const std::vector<std::vector<bool>>& matrix, const std::vector<node*>& graph);
 
 /* MAIN FUNCTION */
@@ -65,11 +42,25 @@ static bool validate_Nqueens(const std::vector<std::vector<bool>>& matrix, const
  * The program first accepts an integer value n which is the size of the matrix and the number of available nodes for
  * the graph.
  *
- * The function accepts
+ * After this if the program is set to accept a matrix it accepts it as a series of n lines of size n consisting of
+ * ones and zeroes and saves it to a 2d boolean vector in matrix(the local variable) and calls matrix_to_graph(matrix)
+ * and stores the result in graph(the local variable).
  *
- * @param argc
- * @param argv
- * @return
+ * if the program is set to accept a graph, it initializes graph to hold n labels in alphabetical order then
+ * accepts a series of strings in the form [label1]->[label2] and stores a pointer to graph[label 2] in the
+ * neighbors vector of graph[label2]. it then calls graph_to_matrix(graph) and stores the resulting matrix in matrix
+ *
+ * OUTPUT:
+ * the program then outputs all requested output information.
+ *
+ * matrices are output as a series of n strings of size n as ones and zeroes.
+ * graphs are output as a series of [label1]->[label2] strings each detailing a pointer from graph[label1] to graph[label2]
+ *
+ * the validity of the graph is output by printing the return value of validate_Nqueens(matrix, graph)
+ *
+ * @param argc the number of arguments passed to the program
+ * @param argv a list of arguments argv[0] is the program name
+ * @return 1 if there are not enough arguments, 2 if too many input arguments are provided, 0 if all has gone correctly
  */
 int main(const int argc, const char * argv[]) {
     if(argc < 3){
@@ -90,7 +81,7 @@ int main(const int argc, const char * argv[]) {
     }
     if(InputFlags[0] && InputFlags[1]){
         std::cerr << "ERROR: Too many input arguments provided\n";
-        return 1;
+        return 2;
     }
 
     for(int i = 0; i < strlen(argv[2]); i++){
@@ -105,6 +96,10 @@ int main(const int argc, const char * argv[]) {
         for(int i = 0; i < n; i++){
             std::cin >> line;
             for(int j = 0; j < n; j++){
+                if(line[j] != '0' && line[j] != '1') {
+                    std::cerr << "Invalid Input: " << std::to_string(line[j]) << "is not a boolean value" << std::endl;
+                    return 3;
+                }
                 matrix[i][j] = line[j] - '0';
             }
         }
@@ -112,16 +107,30 @@ int main(const int argc, const char * argv[]) {
         graph = matrix_to_graph(matrix);
     }
     else if(InputFlags[1]){
+        const auto LABELS_REGEX = std::regex("[0-9]+");
+
         graph = std::vector<node*>(n);
         for(int i = 0; i < n; i++){
-            graph[i] = new node(char(a + i), std::vector<node*>());
+            graph[i] = new node(i, std::vector<node*>());
         }
 
         while(true){
             std::cin >> line;
             if(line == "END"){ break; }
+            if (line.find("->") == std::string::npos) {
+                std::cerr << "Invalid Input: graph input must be of the form '[label1]->[label2]'" << std::endl;
+                return 3;
+            }
 
-            graph[line[0] - a]->neighbors.push_back(graph[line[3] - a]);
+            int indexes[2];
+            int count = 0;
+            for (std::smatch match; std::regex_search(line, match, LABELS_REGEX);) {
+                indexes[count] = std::stoi(match.str());
+                count++;
+                line = match.suffix();
+            }
+
+            graph[indexes[0]]->neighbors.push_back(graph[indexes[1]]);
         }
 
         matrix = graph_to_matrix(graph);
@@ -138,7 +147,7 @@ int main(const int argc, const char * argv[]) {
     if(OutputFlags[1]){
         for(int i = 0; i < n; i++){
             for(auto room : graph[i]->neighbors){
-                std::cout << graph[i]->name << "->" << room->name << std::endl;
+                std::cout << graph[i]->label << "->" << room->label << std::endl;
             }
         }
     }
@@ -150,15 +159,27 @@ int main(const int argc, const char * argv[]) {
     return 0;
 }
 
+/**
+ * matrix_to_graph(matrix) takes a matrix of true false values and converts it into a graph represented by a set of
+ * nodes and one way connections. The graph is returned in the form of a vector of node pointers each containing a
+ * char representing the label of a matrix row, the label of each node neighbors points to is the column on that row
+ * where a value of true exists in the original matrix.
+ * @param matrix a 2d vector of boolean values representing a matrix of boolean values
+ * @return a vector of node pointers representing a graph
+ */
 static std::vector<node*> matrix_to_graph(const std::vector<std::vector<bool>>& matrix){
+    //initialize graph with n values each representing and column
     std::vector<node*> graph(matrix.size());
     for(int i = 0; i < matrix.size(); i++){
-        graph[i] = new node(char(a + i), std::vector<node*>());
+        graph[i] = new node(i, std::vector<node*>());
     }
 
+    //for each row and column in matrix
     for(int i = 0; i < matrix.size(); i++){
         for(int j = 0; j < matrix[i].size(); j++){
+            //if a queen is at the intersection
             if(matrix[i][j] == true){
+                //add the location of the queen to graph
                 graph[i]->neighbors.push_back(graph[j]);
             }
         }
@@ -167,33 +188,73 @@ static std::vector<node*> matrix_to_graph(const std::vector<std::vector<bool>>& 
     return graph;
 }
 
-static std::vector<std::vector<bool>> graph_to_matrix(const std::vector<node*>& graph){
-    int n = graph.size();
-    std::vector<std::vector<bool>> matrix(n, std::vector<bool>(n));
 
-    for(int i = 0; i < n; i++){
-        int x = graph[i]->name - a;
-        for(const auto & neighbor : graph[i]->neighbors){
-            int y = neighbor->name - a;
+/**
+ * graph_to_matrix(graph) takes a graph in the form of a vector of node pointers and represents it as a matrix of boolean
+ * values where the true value represents a point where the node representing that row points to a node representing
+ * that column.
+ * @param graph a vector of node pointers representing a graph
+ * @return a 2d vector of boolean values representing a matrix of boolean values
+ */
+static std::vector<std::vector<bool>> graph_to_matrix(const std::vector<node*>& graph){
+    //initialize an empty n by n 2d boolean matrix storing the graph
+    std::vector<std::vector<bool>> matrix(graph.size(), std::vector<bool>(graph.size()));
+
+    //for each row/column
+    for(const auto vertex : graph){
+        //get its row/column index
+        int x = vertex->label;
+        //for each queen in its row
+        for(const auto & neighbor : vertex->neighbors){
+            //add it to the matrix in the correct position
+            int y = neighbor->label;
             matrix[x][y] = true;
         }
     }
     return matrix;
 }
 
+/**
+ * validate_Nqueens(matrix, graph) accepts a 2d matrix of boolean values, and it's corresponding graph and determines
+ * weather or not they satisfy the constraints of the Nqueens problem: each true values is placed in such a way that it
+ * does not share a diagonal, column, or row, with any other true values.
+ * @param matrix a 2d vector of boolean values representing a matrix of boolean values
+ * @param graph a vector of node pointers representing a graph
+ * @return weather or not the given matrix and graph satisfy Nqueens
+ */
 static bool validate_Nqueens(const std::vector<std::vector<bool>>& matrix, const std::vector<node*>& graph){
+    //declare an array to hold the number of pointers to each node
+    int columnCounts[graph.size()];
+    //for each node
     for(const auto node : graph){
-        if(node->neighbors.size() > 1){
+        //if the row that node represents contains more than one queen
+        if(node->neighbors.size() > 1) {
+            //this graph is not a valid Nqueens solution
+            return false;
+        }
+        //if the row has only one queen, add to the count for its column
+        columnCounts[node->neighbors[0]->label] += 1;
+    }
+    //for each column
+    for (const int count: columnCounts) {
+        //if that coumn has more than one queen
+        if (count > 1) {
+            //this graph is not a valid Nqueens solution
             return false;
         }
     }
-    for(int i = 0; i < matrix.size(); i++){
-        int x1= graph[i]->name - a + 1;
-        int x2= graph[i]->name - a - 1;
-        int y2;
-        int y1 = y2 = graph[i]->neighbors[0]->name - a + 1;
 
+    //for every queen in row order
+    for(int i = 0; i < matrix.size(); i++){
+        //store the starting points for checking it's diagonals
+        int x1= graph[i]->label + 1;
+        int x2= graph[i]->label - 1;
+        int y2;
+        int y1 = y2 = graph[i]->neighbors[0]->label + 1;
+
+        //for each value in the down-right diagonal
         while (x1 < matrix.size() && y1 < matrix.size()){
+            //
             if(matrix[x1][y1] == true){
                 return false;
             }
@@ -203,8 +264,6 @@ static bool validate_Nqueens(const std::vector<std::vector<bool>>& matrix, const
 
         while (x2 >= 0 && y2 < matrix.size()){
             if(matrix[x2][y2] == true){
-                std::cout << graph[i]->name << std::endl;
-                std::cout << x2 << " " << y2 << std::endl;
                 return false;
             }
             x2--;
