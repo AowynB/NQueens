@@ -13,6 +13,11 @@ struct node{
     std::vector<node*> neighbors; //connected nodes
 };
 
+struct cycle {
+    int size;
+    node* start;
+};
+
 constexpr int a = 'a'; //the ascii value of lowercase a used for displaying graph nodes as alphabetical characters
 
 /* CONVERSION FUNCTIONS */
@@ -21,6 +26,9 @@ static std::vector<std::vector<bool>> graph_to_matrix(const std::vector<node*>& 
 
 /* VERIFICATION FUNCTIONS */
 static bool validate_Nqueens(const std::vector<std::vector<bool>>& matrix, const std::vector<node*>& graph);
+
+/* Analysis Functions */
+static std::vector<cycle*> analyse_cycles(const std::vector<node*>& graph);
 
 /* MAIN FUNCTION */
 /**
@@ -237,7 +245,7 @@ static bool validate_Nqueens(const std::vector<std::vector<bool>>& matrix, const
     }
     //for each column
     for (const int count: columnCounts) {
-        //if that coumn has more than one queen
+        //if that column has more than one queen
         if (count > 1) {
             //this graph is not a valid Nqueens solution
             return false;
@@ -246,7 +254,7 @@ static bool validate_Nqueens(const std::vector<std::vector<bool>>& matrix, const
 
     //for every queen in row order
     for(int i = 0; i < matrix.size(); i++){
-        //store the starting points for checking it's diagonals
+        //store the starting points for checking its diagonals
         int x1= graph[i]->label + 1;
         int x2= graph[i]->label - 1;
         int y2;
@@ -271,5 +279,37 @@ static bool validate_Nqueens(const std::vector<std::vector<bool>>& matrix, const
         }
     }
     return true;
+}
+
+/**
+ * analyse_cycles(graph) accepts a validated n-Queens graph in the form of a vector of node pointers and searches
+ * the graph for all cycles. cycles are found by iterating over the graph, for every node it encounters that has
+ * not been checked, it creates a new cycle, with initial size 1 and start set as graph[i], it then visits each node
+ * in the cycle incrementing size each time and marking it as visited until it reaches a node that has been visited,
+ * or it reaches nullptr. return the vector of cycles
+ * @param graph a vector of node pointers representing a graph
+ * @return a vector of the cycles present in the graph+
+ */
+std::vector<cycle*> analyse_cycles(const std::vector<node *> &graph) {
+    std::vector<cycle*> cycles;
+
+    bool visited[graph.size()];
+    for(int i = 0; i < graph.size(); i++) { visited[i] = false; }
+
+    for (int i = 0; i < graph.size(); i++) {
+        if (visited[i] == false) {
+            cycles.emplace_back(new cycle(1, graph[i]));
+            visited[i] = true;
+
+            node *next = graph[i]->neighbors[0];
+            while (next != nullptr && !visited[next->label]) {
+                cycles.at(cycles.size() - 1)->size++;
+                visited[next->label] = true;
+                next = next->neighbors[0];
+            }
+        }
+    }
+
+    return cycles;
 }
 
