@@ -50,3 +50,17 @@ a_3->a_6
 We seek to show that this pattern of cyclic digraphs holds in general iff the matrix exists.
 Note there are cases where no solution is possible, namely $N = 2 "and" N = 3$.
 First, we need to understand what the digraph is representing about the board.
+[Still needs to be filled in.]
+
+== The Algorithm
+[I'll describe the algorithm later.]
+
+Assume that each new level of the tree to take $Theta(1)$ time to compute (I.E., we have unlimited cores, and we are using $N$ of them to compute the $N$-th level).
+Then, to reach the $N$-th level, it will take us $Sigma_(i=0)^N 1$ iterations, which gives us an asymptotic time complexity of $Theta(N)$.
+
+Now, notice that the $N$-th level of our tree has $N^N$ vertices.
+It follows that to reach the $N$-th level, it'll take $Sigma_(i=0)^N N^i$ space.
+Thus, we have $Omicron (Sigma_(i=0)^N N^i)$ as an upper bound to our space complexity.
+
+In the real world, the time complexity will be worse, as we do not have this idealised computer, and thus must put an upper bound the number of simultaneous processes.
+However, the space complexity will be better, since we can apply a set of "clever tricks" to cut down on the number of possible things we need to check, though it will still be bounded by the GPU.
