@@ -54,6 +54,10 @@ First, we need to understand what the digraph is representing about the board.
 
 == The Algorithm
 [I'll describe the algorithm later.]
+#raw-render(```dot digraph {
+    a_0->a_1
+    a_0->a_2
+}```)
 
 Assume that each new level of the tree to take $Theta(1)$ time to compute (I.E., we have unlimited cores, and we are using $N$ of them to compute the $N$-th level).
 Then, to reach the $N$-th level, it will take us $Sigma_(i=0)^N 1$ iterations, which gives us an asymptotic time complexity of $Theta(N)$.
