@@ -53,11 +53,15 @@ First, we need to understand what the digraph is representing about the board.
 [Still needs to be filled in.]
 
 == The Algorithm
-[I'll describe the algorithm later.]
-#raw-render(```dot digraph {
-    a_0->a_1
-    a_0->a_2
-}```)
+[I'll describe the algorithm in more detail later.]
+
+Much of guts our algorithm was inspired by a wonderful paper by Richards @AlgorithmIdea.
+Please note that this is a rough outline of the algorithm; later, we'll describe a more efficient approach.
+When computing valid solutions to N-Queens, we start with an empty board, and then place down all possible Queen positions on the first row across four different matrices.
+This gives us $N$ matrices that we're currently working on.
+Now, we repeat the process, starting on the next row, for each of these matrices, creating N copies of it, and then placing a Queen in each spot on the row.
+We now have $N^2$ matrices.
+However, we can cut this down substantially by pruning all solutions that form a 
 
 Assume that each new level of the tree to take $Theta(1)$ time to compute (I.E., we have unlimited cores, and we are using $N$ of them to compute the $N$-th level).
 Then, to reach the $N$-th level, it will take us $Sigma_(i=0)^N 1$ iterations, which gives us an asymptotic time complexity of $Theta(N)$.
@@ -68,3 +72,5 @@ Thus, we have $Omicron (Sigma_(i=0)^N N^i)$ as an upper bound to our space compl
 
 In the real world, the time complexity will be worse, as we do not have this idealised computer, and thus must put an upper bound the number of simultaneous processes.
 However, the space complexity will be better, since we can apply a set of "clever tricks" to cut down on the number of possible things we need to check, though it will still be bounded by the space usage.
+
+#bibliography("sources.bib")
