@@ -63,4 +63,4 @@ It follows that to reach the $N$-th level, it'll take $Sigma_(i=0)^N N^i$ space.
 Thus, we have $Omicron (Sigma_(i=0)^N N^i)$ as an upper bound to our space complexity.
 
 In the real world, the time complexity will be worse, as we do not have this idealised computer, and thus must put an upper bound the number of simultaneous processes.
-However, the space complexity will be better, since we can apply a set of "clever tricks" to cut down on the number of possible things we need to check, though it will still be bounded by the GPU.
+However, the space complexity will be better, since we can apply a set of "clever tricks" to cut down on the number of possible things we need to check, though it will still be bounded by the space usage.
