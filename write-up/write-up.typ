@@ -64,7 +64,6 @@ We now have $N^2 + N$ matrices.
 However, we can cut this down substantially by pruning all solutions that form an invalid solution, that is, the Queens can take each other.
 Due to this pruning, we'll have strictly less than $N^2 + N$ matrices.
 We repeat this process until we have explored all possible routes through this tree.
-
 Noting that the $N$-th level of our tree has $N^N$ vertices, it follows that to reach the $N$-th level, it'll take $Sigma_(i=0)^N N^i$ space.
 Thus, we have $Omicron (Sigma_(i=0)^N N^i)$ as an upper bound to our space complexity (we will improve on this later, once the algorithm is shown in all its glory).
 
