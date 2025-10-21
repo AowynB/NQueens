@@ -59,7 +59,7 @@ Much of guts our algorithm was inspired by a wonderful paper by Richards @Algori
 Please note that this is a rough outline of the algorithm; later, we'll describe a more efficient approach.
 When computing valid solutions to N-Queens, we start with an empty board, and then place down all possible Queen positions on the first row across four different matrices.
 This gives us $N$ matrices that we're currently working on.
-Now, we repeat the process, starting on the next row, for each of these matrices, creating N copies of it, and then placing a Queen in each spot on the row.
+Now, we repeat the process, starting on the next row, for each of these matrices, creating $N$ copies of it, and then placing a Queen in each spot on the row.
 We now have $N^2 + N$ matrices.
 However, we can cut this down substantially by pruning all solutions that form an invalid solution, that is, the Queens can take each other.
 Due to this pruning, we'll have strictly less than $N^2 + N$ matrices.
