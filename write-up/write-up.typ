@@ -94,7 +94,7 @@ In the real world, the time complexity will be worse, as we do not have this ide
 However, the space complexity will be better, since we can apply a set of "clever tricks" to cut down on the number of possible things we need to check, though it will still be bounded by the space usage.
 
 == The Full Beast
-
+One of the main tricks applied by our algorithm requires a small explanation.
 
 #pagebreak()
 #bibliography("sources.bib")
