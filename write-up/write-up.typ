@@ -60,17 +60,20 @@ Please note that this is a rough outline of the algorithm; later, we'll describe
 When computing valid solutions to N-Queens, we start with an empty board, and then place down all possible Queen positions on the first row across four different matrices.
 This gives us $N$ matrices that we're currently working on.
 Now, we repeat the process, starting on the next row, for each of these matrices, creating N copies of it, and then placing a Queen in each spot on the row.
-We now have $N^2$ matrices.
-However, we can cut this down substantially by pruning all solutions that form a 
+We now have $N^2 + N$ matrices.
+However, we can cut this down substantially by pruning all solutions that form an invalid solution, that is, the Queens can take each other.
+Due to this pruning, we'll have strictly less than $N^2 + N$ matrices.
+We repeat this process until we have explored all possible routes through this tree.
 
-Assume that each new level of the tree to take $Theta(1)$ time to compute (I.E., we have unlimited cores, and we are using $N$ of them to compute the $N$-th level).
+Noting that the $N$-th level of our tree has $N^N$ vertices, it follows that to reach the $N$-th level, it'll take $Sigma_(i=0)^N N^i$ space.
+Thus, we have $Omicron (Sigma_(i=0)^N N^i)$ as an upper bound to our space complexity (we will improve on this later, once the algorithm is shown in all its glory).
+
+Now, assume that each new level of the tree to take $Theta(1)$ time to compute (I.E., we have unlimited cores, and we are using $N$ of them to compute the $N$-th level).
 Then, to reach the $N$-th level, it will take us $Sigma_(i=0)^N 1$ iterations, which gives us an asymptotic time complexity of $Theta(N)$.
 
-Now, notice that the $N$-th level of our tree has $N^N$ vertices.
-It follows that to reach the $N$-th level, it'll take $Sigma_(i=0)^N N^i$ space.
-Thus, we have $Omicron (Sigma_(i=0)^N N^i)$ as an upper bound to our space complexity.
-
 In the real world, the time complexity will be worse, as we do not have this idealised computer, and thus must put an upper bound the number of simultaneous processes.
-However, the space complexity will be better, since we can apply a set of "clever tricks" to cut down on the number of possible things we need to check, though it will still be bounded by the space usage.
+However, the space complexity will be better, since we can apply a set of "clever tricks" to cut down on the number of possible things we need to check, though it will still be bounded by the space and time usage.
+
+
 
 #bibliography("sources.bib")
