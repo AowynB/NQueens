@@ -1,10 +1,31 @@
 #import "@preview/diagraph:0.3.6": raw-render
 #show link: underline
+#set heading(numbering: "1.")
 
+#align(center)[
+    #set text(17pt); *TODO: Figure Out a Good Title*
+]
 
-#align(center, block[#set text(17pt); *The N-Queens Problem as a Digraph*])
+#grid(
+    columns: (1fr, 1fr),
+    align(center)[Aowyn Brook],
+    align(center)[Cam Ayres]
+)
+
 #linebreak()
+#align(center)[
+    #set par(justify: false)
+    *Abstract*
+    #lorem(80)
+]
 
+
+#pagebreak()
+#outline()
+#pagebreak()
+
+
+= Introduction
 The N-Queens problem is a rather simple one: if you have a $N times N$ chess board (for fixed $N in NN$), can you place $N$ queens such that none of them are checking each other, or in other words, so that none of them are able to take each other.
 A more detailed description is given at #link("https://en.wikipedia.org/wiki/N_queens").
 We can visualise this as an $N times N$ matrix, where $1$ represents a queen being in a specific position, and $0$ represents an empty tile.
@@ -52,10 +73,9 @@ Note there are cases where no solution is possible, namely $N = 2 "and" N = 3$.
 First, we need to understand what the digraph is representing about the board.
 [Still needs to be filled in.]
 
-== The Algorithm
-[I'll describe the algorithm in more detail later.]
-
-Much of guts our algorithm was inspired by a wonderful paper by Richards @AlgorithmIdea.
+= The Algorithm
+== A Simplified Model
+Much of the guts our algorithm was inspired by a wonderful paper by Richards @AlgorithmIdea.
 Please note that this is a rough outline of the algorithm; later, we'll describe a more efficient approach.
 When computing valid solutions to N-Queens, we start with an empty board, and then place down all possible Queen positions on the first row across $N$ different matrices.
 This gives us $N$ matrices that we're currently working on.
@@ -65,14 +85,16 @@ However, we can cut this down substantially by pruning all solutions that form a
 Due to this pruning, we'll have strictly less than $N^2 + N$ matrices.
 We repeat this process until we have explored all possible routes through this tree.
 Noting that the $N$-th level of our tree has $N^N$ vertices, it follows that to reach the $N$-th level, it'll take $Sigma_(i=0)^N N^i$ space.
-Thus, we have $Omicron (Sigma_(i=0)^N N^i)$ as an upper bound to our space complexity (we will improve on this later, once the algorithm is shown in all its glory).
+Thus, we have $Omicron (Sigma_(i=0)^N N^i)$ as an upper bound to our space complexity (we will improve on this estimate later, once the algorithm is shown in all its glory).
 
 Now, assume that each new level of the tree to take $Theta(1)$ time to compute (I.E., we have unlimited cores, and we are using $N$ of them to compute the $N$-th level).
 Then, to reach the $N$-th level, it will take us $Sigma_(i=0)^N 1$ iterations, which gives us an asymptotic time complexity of $Theta(N)$.
 
 In the real world, the time complexity will be worse, as we do not have this idealised computer, and thus must put an upper bound the number of simultaneous processes.
-However, the space complexity will be better, since we can apply a set of "clever tricks" to cut down on the number of possible things we need to check, though it will still be bounded by the space and time usage.
+However, the space complexity will be better, since we can apply a set of "clever tricks" to cut down on the number of possible things we need to check, though it will still be bounded by the space usage.
+
+== The Full Beast
 
 
-
+#pagebreak()
 #bibliography("sources.bib")
