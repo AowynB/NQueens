@@ -26,6 +26,8 @@
 
 
 = Introduction
+To be clear, we will be defining $NN = {1, 2, 3, ...}$ in this write up, as apposed to $NN = {0, 1, 2, ...}$.
+
 The N-Queens problem is a rather simple one: if you have a $N times N$ chess board (for fixed $N in NN$), can you place $N$ queens such that none of them are checking each other, or in other words, so that none of them are able to take each other.
 A more detailed description is given at #link("https://en.wikipedia.org/wiki/N_queens").
 We can visualise this as an $N times N$ matrix, where $1$ represents a queen being in a specific position, and $0$ represents an empty tile.
@@ -92,6 +94,8 @@ Thus, we have $Omicron (Sigma_(i=0)^N N^i)$ as an upper bound to our space compl
 
 Now, assume that each new level of the tree to take $Theta(1)$ time to compute (I.E., we have unlimited cores, and we are using $N$ of them to compute the $N$-th level).
 Then, to reach the $N$-th level, it will take us $Sigma_(i=0)^N 1$ iterations, which gives us an asymptotic time complexity of $Theta(N)$.
+We can trivially generalise this to a machine that can compute $c in NN$ computations simultaneously, to $Theta(ceil.l c/N ceil.r)$.
+Notice that for $N <= c$, we still have $Theta(N)$.
 
 In the real world, the time complexity will be worse, as we do not have this idealised computer, and thus must put an upper bound the number of simultaneous processes.
 However, the space complexity will be better, since we can apply a set of "clever tricks" to cut down on the number of possible things we need to check, though it will still be bounded by the space usage.
