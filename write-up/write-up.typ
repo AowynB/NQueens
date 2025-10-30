@@ -42,12 +42,13 @@ For example, the matrix
 is a valid solution, as none of the $1$s can "attack" each other on a diagonal, horizontal, or vertical line (the queen's valid moves).
 Notice that this could form a digraph, where the top of the matrix is labelled $a_0, a_1, ..., a_N$, and the side $b_0, b_1, ..., b_N$, and an edge from $a_n$ to $b_m$ (with $n,m in {0, 1, ..., N}$) existing iff $M_(m,n) = 1$ (where $M$ is the matrix in question).
 Thus, our matrix above would form the digraph
-#align(center)[#raw-render(```dot digraph {
+#figure(caption: [One of the two solutions for N=4],
+align(center)[#raw-render(```dot digraph {
 a_0->a_2
 a_1->a_0
 a_2->a_3
 a_3->a_1
-}```)]
+}```)]) <N4Sol1>
 Notice the cycle in the digraph.
 It is also important to note that there may exist multiple solutions to a given $N$.
 When we checked the first 8 solutions computationally, we found that _all_ of the corresponding digraphs had similar cycles (the code is available in the Github repository #link("https://github.com/AowynB/NQueens"), along with the source for this document, and a copy of the PDF).
@@ -79,6 +80,24 @@ First, we need to understand what the digraph is representing about the board.
 [Still needs to be filled in.]
 
 = The Algorithm
+== A Method For Storing Solutions
+[Prove that the solutions always form the cyclic pattern, shouldn't be too hard]
+If we were to store the full matrix, we'd be using $Theta(N^2)$ bits, which is very bad.
+Thus, we cunningly use a better method, bringing this down to $Theta(N log_2(N))$ bits: adjacency lists.
+Since each vertex has exactly $1$ edge going from, and exactly $1$ going to, we notice that each vertex in the adjacency list has exactly one vertex it points to.
+Using the graph in @N4Sol1, we would write (with newlines and colons added for human readability, the machine shall not be given such luxuries) $ 00000010\ 00:01\ 01:11\ 10:00\ 11:10 $.
+The first eight bits represent the number of nodes that we have -- for $N = 4$, we have four vertices, which we can represent in two bits.
+Then, on each line, we have "vertex:linked-vertex".
+
+We now prove that it takes $log_2(N) + 2N log_2(N) in Theta(N log_2(N))$ space (it's $8 + N log_2(N)$ in our actual program, since that's easier for the computer).
+Notice that the number of bits required to represent a number $N in NN$ is $log_2(N)$.
+Furthermore, we have $2N$ of these in our adjacency list.
+We multiply, and hence have $log_2(N) + 2N log_2(N) in Theta(N log_2(N))$ bits required.
+As said previously, the first $log_2(N)$ will likely be set to $8$, though for large enough $N$ (I.E., $N > 256$, which we are unlikely to successfully compute), this will no longer work, and another constant is needed.
+
+It's worth noting that this'll add more overhead when getting solutions out of cold storage.
+There are other methods for storage that we found and discussed, which #emph[may] be used in other parts of the program, say, while computing solutions.
+
 == A Simplified Model
 Much of the guts our algorithm was inspired by a wonderful paper by Richards @AlgorithmIdea.
 Please note that this is a rough outline of the algorithm; later, we'll describe a more efficient approach.
